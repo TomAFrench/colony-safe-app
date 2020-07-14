@@ -14,4 +14,5 @@ export {
   useSetColony,
   useTokens,
   useToken,
+  useTokenLockingClient,
 } from "./hooks";
