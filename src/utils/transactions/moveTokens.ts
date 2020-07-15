@@ -8,7 +8,7 @@ const moveTokenTxs = (
   fromChildSkillIndex: BigNumber,
   toChildSkillIndex: BigNumber,
   token: string,
-  amount: string,
+  amount: BigNumber,
   fromPot: BigNumber,
   toPot: BigNumber,
 ): Transaction[] => {

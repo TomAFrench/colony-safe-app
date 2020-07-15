@@ -2,6 +2,7 @@ import React, { ReactElement, useState, useCallback } from "react";
 import { ModalFooterConfirmation, GenericModal } from "@gnosis.pm/safe-react-components";
 import { Box, Tab, Tabs } from "@material-ui/core";
 import { ColonyRole, getMoveFundsPermissionProofs } from "@colony/colony-js";
+import { parseUnits } from "ethers/utils";
 import { Token, PermissionProof, Domain } from "../../../typings";
 import SendTokensBody from "./SendTokensBody";
 import MoveTokensBody from "./MoveTokensBody";
@@ -76,13 +77,13 @@ const TokenModal = ({
         fromChildSkillIndex,
         toChildSkillIndex,
         token.address,
-        amount,
+        parseUnits(amount, token.decimals),
         fromPotId,
         toPotId,
       );
       appSdk.sendTransactions(txs);
     }
-  }, [amount, appSdk, client, domain.fundingPotId, safeInfo, toDomain.fundingPotId, token.address]);
+  }, [amount, appSdk, client, domain.fundingPotId, safeInfo, toDomain.fundingPotId, token.address, token.decimals]);
 
   const sendTokens = useCallback(() => {
     if (client && adminPermissionProof && paymentClientProof) {
@@ -101,13 +102,23 @@ const TokenModal = ({
         callerChildSkillIndex,
         recipient,
         token.address,
-        amount,
+        parseUnits(amount, token.decimals),
         domainId,
         skillId,
       );
       appSdk.sendTransactions(txs);
     }
-  }, [adminPermissionProof, amount, appSdk, client, domain, paymentClientProof, recipient, token.address]);
+  }, [
+    adminPermissionProof,
+    amount,
+    appSdk,
+    client,
+    domain,
+    paymentClientProof,
+    recipient,
+    token.address,
+    token.decimals,
+  ]);
 
   const modalTitle = `${token.symbol}`;
 
