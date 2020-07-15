@@ -52,7 +52,7 @@ const claimPayoutTxs = async (
   );
 
   const tokenLockingClient = await colonyClient.networkClient.getTokenLockingClient();
-  const { balance } = await tokenLockingClient.getUserLock(payout.tokenAddress, userAddress);
+  const { balance } = await tokenLockingClient.getUserLock(await colonyClient.getToken(), userAddress);
 
   const squareRoots = calculateSquareRoots(amount, balance, totalTokens, reputationAmount, colonyWideReputation);
 
