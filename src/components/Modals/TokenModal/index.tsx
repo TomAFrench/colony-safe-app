@@ -75,14 +75,14 @@ const TokenModal = ({
         fromPermissionDomainId,
         fromChildSkillIndex,
         toChildSkillIndex,
-        "0",
+        token.address,
         amount,
         fromPotId,
         toPotId,
       );
       appSdk.sendTransactions(txs);
     }
-  }, [amount, appSdk, client, domain.fundingPotId, safeInfo, toDomain.fundingPotId]);
+  }, [amount, appSdk, client, domain.fundingPotId, safeInfo, toDomain.fundingPotId, token.address]);
 
   const sendTokens = useCallback(() => {
     if (client && adminPermissionProof && paymentClientProof) {
