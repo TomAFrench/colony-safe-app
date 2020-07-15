@@ -30,7 +30,7 @@ const PayoutModal = ({
 
   const waivePayout = useCallback(async () => {
     if (colonyClient && safeInfo?.safeAddress) {
-      const txs = await Promise.all(payouts.map(payout => waivePayoutTxs(colonyClient, safeInfo.safeAddress, payout)));
+      const txs = await waivePayoutTxs(colonyClient, safeInfo.safeAddress, payouts.length);
       appsSdk.sendTransactions(txs);
     }
   }, [colonyClient, payouts, safeInfo, appsSdk]);

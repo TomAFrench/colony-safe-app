@@ -1,18 +1,22 @@
 import { ColonyClient } from "@colony/colony-js";
-import { Transaction, PayoutInfo } from "../../../typings";
+import { Transaction } from "../../../typings";
 
 const waivePayoutTxs = async (
   colonyClient: ColonyClient,
   userAddress: string,
-  payout: PayoutInfo,
+  payoutsWaived: number,
 ): Promise<Transaction[]> => {
   const tokenLockingClient = await colonyClient.networkClient.getTokenLockingClient();
-  const { lockCount } = await tokenLockingClient.getUserLock(payout.tokenAddress, userAddress);
+  const nativeTokenAddress = await colonyClient.getToken();
+  const { lockCount } = await tokenLockingClient.getUserLock(nativeTokenAddress, userAddress);
 
   const txs: Transaction[] = [];
 
   txs.push({
-    data: tokenLockingClient.interface.functions.incrementLockCounterTo.encode([payout.tokenAddress, lockCount.add(1)]),
+    data: tokenLockingClient.interface.functions.incrementLockCounterTo.encode([
+      nativeTokenAddress,
+      lockCount.add(payoutsWaived),
+    ]),
     to: tokenLockingClient.address,
     value: 0,
   });
