@@ -35,17 +35,20 @@ const PayoutModal = ({
     }
   }, [colonyClient, payouts, safeInfo, appsSdk]);
 
-  const modalFooter = (
-    <ModalFooter cancelText="Waive" okText="Claim" handleCancel={() => waivePayout()} handleOk={() => claimPayout()} />
-  );
-
   if (!isOpen) return null;
   return (
     <GenericModal
       onClose={() => setIsOpen(false)}
       title="Claim Payouts"
       body={<ModalBody payouts={payouts} />}
-      footer={modalFooter}
+      footer={
+        <ModalFooter
+          cancelText="Waive"
+          okText="Claim"
+          handleCancel={() => waivePayout()}
+          handleOk={() => claimPayout()}
+        />
+      }
     />
   );
 };
