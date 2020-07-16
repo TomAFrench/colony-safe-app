@@ -4,7 +4,6 @@ import { TableRow, TableCell } from "@material-ui/core";
 import { Zero } from "ethers/constants";
 import { ColonyClient } from "@colony/colony-js";
 import { ExtendedTokenLocking } from "@colony/colony-js/lib/clients/TokenLockingClient";
-import PayoutModal from "../Modals/PayoutModal";
 import { useToken, useColonyClient, useTokenLockingClient } from "../../contexts/ColonyContext";
 import { PayoutInfo } from "../../typings";
 import getReputationProof from "../../utils/colony/getReputationProof";
@@ -45,7 +44,6 @@ const PayoutRow = ({ payouts }: { payouts: PayoutInfo[] }) => {
   const colonyClient = useColonyClient();
   const tokenLockingClient = useTokenLockingClient();
   const payoutToken = useToken(payouts[0].tokenAddress);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const [claimableBalance, setClaimableBalance] = useState<BigNumber>(Zero);
 
@@ -60,8 +58,7 @@ const PayoutRow = ({ payouts }: { payouts: PayoutInfo[] }) => {
   if (payouts.length === 0) return null;
   return (
     <>
-      <PayoutModal isOpen={isOpen} setIsOpen={setIsOpen} payouts={payouts} />
-      <TableRow onClick={() => setIsOpen(true)}>
+      <TableRow>
         <TableCell>{payoutToken?.symbol || payouts[0].tokenAddress}</TableCell>
         <TableCell align="right">{formatUnits(claimableBalance, payoutToken?.decimals)}</TableCell>
       </TableRow>

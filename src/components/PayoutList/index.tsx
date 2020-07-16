@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 
 import { TableBody } from "@material-ui/core";
 import { ColonyRole } from "@colony/colony-js";
@@ -10,6 +10,7 @@ import Table from "../common/StyledTable";
 import { useSafeInfo } from "../../contexts/SafeContext";
 import { useActivePayouts, useHasDomainPermission } from "../../contexts/ColonyContext";
 import { PayoutInfo } from "../../typings";
+import PayoutModal from "../Modals/PayoutModal";
 
 type GroupedPayouts = { [tokenAddress: string]: PayoutInfo[] };
 
@@ -26,6 +27,8 @@ const PayoutList = () => {
   const activePayouts = useActivePayouts();
   const hasRootPermission = useHasDomainPermission(safeInfo?.safeAddress, 1, ColonyRole.Root);
 
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
   const payoutList = useMemo(
     () =>
       Object.entries(groupPayouts(activePayouts)).map(([tokenAddress, payouts]) => (
@@ -36,7 +39,8 @@ const PayoutList = () => {
 
   return (
     <Table>
-      <TableBody>
+      {activePayouts.length > 0 && <PayoutModal isOpen={isOpen} setIsOpen={setIsOpen} payouts={activePayouts} />}
+      <TableBody onClick={() => setIsOpen(true)}>
         {hasRootPermission && <NewPayoutRow />}
         {payoutList}
       </TableBody>
