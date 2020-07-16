@@ -5,6 +5,7 @@ import { TokenInfo } from "@colony/colony-js/lib/clients/TokenClient";
 import { BigNumber, BigNumberish } from "ethers/utils";
 import { getPermissionProofs } from "@colony/colony-js/lib/clients/Colony/extensions/commonExtensions";
 import { Zero, MaxUint256 } from "ethers/constants";
+import { ExtendedTokenLocking } from "@colony/colony-js/lib/clients/TokenLockingClient";
 import { Domain, PermissionProof, MoveFundsBetweenPotsProof, Token, PayoutInfo } from "../../typings";
 import userHasDomainRole from "../../utils/colony/userHasDomainRole";
 import { useColonyContext } from "./ColonyContext";
@@ -14,6 +15,19 @@ import getActivePayouts from "../../utils/colony/getColonyPayouts";
 export const useColonyClient = (): ColonyClient | undefined => {
   const { colonyClient } = useColonyContext();
   return colonyClient;
+};
+
+export const useTokenLockingClient = (): ExtendedTokenLocking | undefined => {
+  const colonyClient = useColonyClient();
+  const [tokenLockingClient, setTokenLockingClient] = useState<ExtendedTokenLocking>();
+
+  useEffect(() => {
+    if (colonyClient) {
+      colonyClient.networkClient.getTokenLockingClient().then(client => setTokenLockingClient(client));
+    }
+  }, [colonyClient]);
+
+  return tokenLockingClient;
 };
 
 export const useSetColony = (): Function => {

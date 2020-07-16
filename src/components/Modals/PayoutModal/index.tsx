@@ -1,23 +1,21 @@
 import React, { ReactElement, useCallback } from "react";
-import { GenericModal, Text } from "@gnosis.pm/safe-react-components";
-import { formatUnits } from "ethers/utils";
+import { GenericModal } from "@gnosis.pm/safe-react-components";
 import ModalFooter from "./ModalFooter";
-import { Token, PayoutInfo } from "../../../typings";
+import { PayoutInfo } from "../../../typings";
 import { useAppsSdk, useSafeInfo } from "../../../contexts/SafeContext";
 import { useColonyClient } from "../../../contexts/ColonyContext";
 import claimPayoutTxs from "../../../utils/transactions/rewards/claimPayout";
 import waivePayoutTxs from "../../../utils/transactions/rewards/waivePayout";
+import ModalBody from "./ModalBody";
 
 const PayoutModal = ({
   isOpen,
   setIsOpen,
-  payout,
-  token,
+  payouts,
 }: {
   isOpen: boolean;
   setIsOpen: Function;
-  payout: PayoutInfo;
-  token: Token;
+  payouts: PayoutInfo[];
 }): ReactElement | null => {
   const safeInfo = useSafeInfo();
   const appsSdk = useAppsSdk();
@@ -25,27 +23,17 @@ const PayoutModal = ({
 
   const claimPayout = useCallback(async () => {
     if (colonyClient && safeInfo?.safeAddress) {
-      const txs = await claimPayoutTxs(colonyClient, safeInfo.safeAddress, payout);
+      const txs = await Promise.all(payouts.map(payout => claimPayoutTxs(colonyClient, safeInfo.safeAddress, payout)));
       appsSdk.sendTransactions(txs);
     }
-  }, [colonyClient, payout, safeInfo, appsSdk]);
+  }, [colonyClient, payouts, safeInfo, appsSdk]);
 
   const waivePayout = useCallback(async () => {
     if (colonyClient && safeInfo?.safeAddress) {
-      const txs = await waivePayoutTxs(colonyClient, safeInfo.safeAddress, payout);
+      const txs = await waivePayoutTxs(colonyClient, safeInfo.safeAddress, payouts.length);
       appsSdk.sendTransactions(txs);
     }
-  }, [colonyClient, payout, safeInfo, appsSdk]);
-
-  const modalBody = (
-    <>
-      <Text size="md">
-        {`You may claim or waive your share of the ${formatUnits(payout.amount, token?.decimals)} ${
-          token.symbol
-        } payout.`}
-      </Text>
-    </>
-  );
+  }, [colonyClient, payouts, safeInfo, appsSdk]);
 
   const modalFooter = (
     <ModalFooter cancelText="Waive" okText="Claim" handleCancel={() => waivePayout()} handleOk={() => claimPayout()} />
@@ -55,8 +43,8 @@ const PayoutModal = ({
   return (
     <GenericModal
       onClose={() => setIsOpen(false)}
-      title={`${token.symbol} Payout`}
-      body={modalBody}
+      title="Claim Payouts"
+      body={<ModalBody payouts={payouts} />}
       footer={modalFooter}
     />
   );

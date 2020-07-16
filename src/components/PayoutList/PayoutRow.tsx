@@ -1,21 +1,69 @@
-import React, { useState } from "react";
-import { formatUnits } from "ethers/utils";
+import React, { useState, useEffect } from "react";
+import { formatUnits, BigNumber } from "ethers/utils";
 import { TableRow, TableCell } from "@material-ui/core";
+import { Zero } from "ethers/constants";
+import { ColonyClient } from "@colony/colony-js";
+import { ExtendedTokenLocking } from "@colony/colony-js/lib/clients/TokenLockingClient";
 import PayoutModal from "../Modals/PayoutModal";
-import { useToken } from "../../contexts/ColonyContext";
+import { useToken, useColonyClient, useTokenLockingClient } from "../../contexts/ColonyContext";
 import { PayoutInfo } from "../../typings";
+import getReputationProof from "../../utils/colony/getReputationProof";
+import { useSafeInfo } from "../../contexts/SafeContext";
 
-const PayoutRow = ({ payout }: { payout: PayoutInfo }) => {
-  const payoutToken = useToken(payout.tokenAddress);
+const getClaimableBalance = async (
+  payout: PayoutInfo,
+  client: ColonyClient,
+  lockedBalance: BigNumber,
+  userAddress: string,
+): Promise<BigNumber> => {
+  const { amount, colonyWideReputation, totalTokens, reputationState } = payout;
+  const { reputationAmount } = await getReputationProof(client, userAddress, reputationState);
+
+  const gmNumerator = reputationAmount.mul(lockedBalance);
+  const gmDenominator = colonyWideReputation.mul(totalTokens);
+  return gmNumerator.mul(amount).div(gmDenominator);
+};
+
+const getTotalClaimableBalance = async (
+  payouts: PayoutInfo[],
+  client: ColonyClient,
+  tokenLockingClient: ExtendedTokenLocking,
+  userAddress: string,
+): Promise<BigNumber> => {
+  const { balance } = await tokenLockingClient.getUserLock(await client.getToken(), userAddress);
+
+  const claimableBalances = await Promise.all(
+    payouts.map(payout => getClaimableBalance(payout, client, balance, userAddress)),
+  );
+  return claimableBalances.reduce((payoutTotal: BigNumber, claimableBalance: BigNumber) => {
+    return payoutTotal.add(claimableBalance);
+  }, Zero);
+};
+
+const PayoutRow = ({ payouts }: { payouts: PayoutInfo[] }) => {
+  const safeInfo = useSafeInfo();
+  const colonyClient = useColonyClient();
+  const tokenLockingClient = useTokenLockingClient();
+  const payoutToken = useToken(payouts[0].tokenAddress);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  if (!payoutToken) return null;
+  const [claimableBalance, setClaimableBalance] = useState<BigNumber>(Zero);
+
+  useEffect(() => {
+    if (colonyClient && tokenLockingClient && safeInfo?.safeAddress) {
+      getTotalClaimableBalance(payouts, colonyClient, tokenLockingClient, safeInfo.safeAddress).then(
+        setClaimableBalance,
+      );
+    }
+  }, [colonyClient, payouts, safeInfo, tokenLockingClient]);
+
+  if (payouts.length === 0) return null;
   return (
     <>
-      <PayoutModal isOpen={isOpen} setIsOpen={setIsOpen} payout={payout} token={payoutToken} />
+      <PayoutModal isOpen={isOpen} setIsOpen={setIsOpen} payouts={payouts} />
       <TableRow onClick={() => setIsOpen(true)}>
-        <TableCell>{payoutToken?.symbol || payout.tokenAddress}</TableCell>
-        <TableCell align="right">{formatUnits(payout.amount, payoutToken?.decimals)}</TableCell>
+        <TableCell>{payoutToken?.symbol || payouts[0].tokenAddress}</TableCell>
+        <TableCell align="right">{formatUnits(claimableBalance, payoutToken?.decimals)}</TableCell>
       </TableRow>
     </>
   );
