@@ -13,8 +13,8 @@ import setPermissions from "../../../utils/transactions/permissions/setPermissio
 import { shortenAddress } from "../../../utils";
 import { Permission } from "./types";
 import { useColonyClient } from "../../../contexts/ColonyContext";
-import { useSafeInfo } from "../../../contexts/SafeContext";
 import { PermissionUpdate } from "../../../typings";
+import { useSafeAddress } from "../../../contexts/SafeContext";
 
 const displayPermissions = (permissions: number[]): Permission[] => [
   {
@@ -93,7 +93,7 @@ const PermissionsModal = ({
   permissionDomainId: BigNumberish;
   childSkillIndex: BigNumberish;
 }) => {
-  const safeInfo = useSafeInfo();
+  const safeAddress = useSafeAddress();
   const colonyClient = useColonyClient();
   const [newPermissions, setNewPermissions] = useState(permissions);
 
@@ -106,11 +106,11 @@ const PermissionsModal = ({
   };
 
   const updatePermissions = useCallback(() => {
-    if (colonyClient && safeInfo) {
+    if (colonyClient && safeAddress) {
       const roleUpdates = getRoleUpdates(permissions, newPermissions);
-      setPermissions(colonyClient, safeInfo.safeAddress, roleUpdates, permissionDomainId, domainId, childSkillIndex);
+      setPermissions(colonyClient, safeAddress, roleUpdates, permissionDomainId, domainId, childSkillIndex);
     }
-  }, [colonyClient, safeInfo, permissions, newPermissions, domainId, permissionDomainId, childSkillIndex]);
+  }, [colonyClient, safeAddress, permissions, newPermissions, domainId, permissionDomainId, childSkillIndex]);
 
   const items = useMemo(() => displayPermissions(newPermissions), [newPermissions]);
   if (!isOpen) return null;

@@ -7,7 +7,7 @@ import { Token, PermissionProof, Domain } from "../../../typings";
 import SendTokensBody from "./SendTokensBody";
 import MoveTokensBody from "./MoveTokensBody";
 import { useColonyClient, usePermissionProof, useColonyDomains } from "../../../contexts/ColonyContext";
-import { useSafeInfo, useAppsSdk } from "../../../contexts/SafeContext";
+import { useSafeAddress, useAppsSdk } from "../../../contexts/SafeContext";
 import moveTokenTxs from "../../../utils/transactions/moveTokens";
 import makePaymentTxs from "../../../utils/transactions/makePayment";
 
@@ -37,7 +37,7 @@ const TokenModal = ({
   adminPermissionProof?: PermissionProof;
   fundingPermissionProof?: PermissionProof;
 }): ReactElement | null => {
-  const safeInfo = useSafeInfo();
+  const safeAddress = useSafeAddress();
   const appSdk = useAppsSdk();
   const client = useColonyClient();
   const domains = useColonyDomains();
@@ -60,7 +60,7 @@ const TokenModal = ({
   const handleChangeTab = (_event: any, newValue: number) => setCurrentTab(newValue);
 
   const moveTokensToPot = useCallback(async () => {
-    if (client && safeInfo) {
+    if (client && safeAddress) {
       const fromPotId = domain.fundingPotId;
       const toPotId = toDomain.fundingPotId;
 
@@ -68,7 +68,7 @@ const TokenModal = ({
         client,
         fromPotId,
         toPotId,
-        safeInfo.safeAddress,
+        safeAddress,
       );
 
       const txs = moveTokenTxs(
@@ -83,7 +83,7 @@ const TokenModal = ({
       );
       appSdk.sendTransactions(txs);
     }
-  }, [amount, appSdk, client, domain.fundingPotId, safeInfo, toDomain.fundingPotId, token.address, token.decimals]);
+  }, [amount, appSdk, client, domain.fundingPotId, safeAddress, toDomain.fundingPotId, token.address, token.decimals]);
 
   const sendTokens = useCallback(() => {
     if (client && adminPermissionProof && paymentClientProof) {

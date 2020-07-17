@@ -72,4 +72,9 @@ export const useAppsSdk = (): SdkInstance => {
   return appsSdk;
 };
 
+export const useSafeAddress = (): string | undefined => {
+  const { safeInfo } = useSafeContext();
+  return safeInfo?.safeAddress;
+};
+
 export default SafeProvider;

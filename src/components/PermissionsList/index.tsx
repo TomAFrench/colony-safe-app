@@ -11,7 +11,7 @@ import PermissionsModal from "../Modals/PermissionsModal";
 import PermissionIcons from "./PermissionIcons";
 import Address from "../common/Address";
 import { useColonyRoles, usePermissionProof } from "../../contexts/ColonyContext";
-import { useSafeInfo } from "../../contexts/SafeContext";
+import { useSafeAddress } from "../../contexts/SafeContext";
 
 const AddressRow = ({
   address,
@@ -96,9 +96,9 @@ const AddAddressRow = () => {
 };
 
 const PermissionsList = ({ currentDomainId }: { currentDomainId: number }) => {
-  const safeInfo = useSafeInfo();
+  const safeAddress = useSafeAddress();
 
-  const permissionProof = usePermissionProof(currentDomainId, ColonyRole.Root, safeInfo?.safeAddress || "");
+  const permissionProof = usePermissionProof(currentDomainId, ColonyRole.Root, safeAddress || "");
 
   const roles: ColonyRoles = useColonyRoles();
 

@@ -1,8 +1,8 @@
-import React, { ReactElement, useCallback } from "react";
+import React, { ReactElement, useCallback, useState } from "react";
 import { GenericModal } from "@gnosis.pm/safe-react-components";
 import ModalFooter from "./ModalFooter";
 import { PayoutInfo } from "../../../typings";
-import { useAppsSdk, useSafeInfo } from "../../../contexts/SafeContext";
+import { useAppsSdk, useSafeAddress } from "../../../contexts/SafeContext";
 import { useColonyClient } from "../../../contexts/ColonyContext";
 import claimPayoutTxs from "../../../utils/transactions/rewards/claimPayout";
 import waivePayoutTxs from "../../../utils/transactions/rewards/waivePayout";
@@ -17,35 +17,42 @@ const PayoutModal = ({
   setIsOpen: Function;
   payouts: PayoutInfo[];
 }): ReactElement | null => {
-  const safeInfo = useSafeInfo();
+  const safeAddress = useSafeAddress();
   const appsSdk = useAppsSdk();
   const colonyClient = useColonyClient();
+  const [claimPayoutArray, setClaimPayoutArray] = useState<boolean[]>(Array(payouts.length).fill(true));
 
-  const claimPayout = useCallback(async () => {
-    if (colonyClient && safeInfo?.safeAddress) {
-      const txs = await Promise.all(payouts.map(payout => claimPayoutTxs(colonyClient, safeInfo.safeAddress, payout)));
+  const handleClaimToggle = (payoutIndex: number, checked: boolean) => {
+    setClaimPayoutArray(claimPayoutArray.map((current, index) => (payoutIndex === index ? checked : current)));
+  };
+
+  const claimOrWaivePayouts = useCallback(async () => {
+    if (colonyClient && safeAddress) {
+      const txs = await Promise.all(
+        payouts.map((payout, index) =>
+          claimPayoutArray[index]
+            ? claimPayoutTxs(colonyClient, safeAddress, payout)
+            : waivePayoutTxs(colonyClient, safeAddress, 1),
+        ),
+      );
       appsSdk.sendTransactions(txs);
     }
-  }, [colonyClient, payouts, safeInfo, appsSdk]);
-
-  const waivePayout = useCallback(async () => {
-    if (colonyClient && safeInfo?.safeAddress) {
-      const txs = await waivePayoutTxs(colonyClient, safeInfo.safeAddress, payouts.length);
-      appsSdk.sendTransactions(txs);
-    }
-  }, [colonyClient, payouts, safeInfo, appsSdk]);
-
-  const modalFooter = (
-    <ModalFooter cancelText="Waive" okText="Claim" handleCancel={() => waivePayout()} handleOk={() => claimPayout()} />
-  );
+  }, [colonyClient, safeAddress, payouts, appsSdk, claimPayoutArray]);
 
   if (!isOpen) return null;
   return (
     <GenericModal
       onClose={() => setIsOpen(false)}
       title="Claim Payouts"
-      body={<ModalBody payouts={payouts} />}
-      footer={modalFooter}
+      body={<ModalBody payouts={payouts} claimPayoutArray={claimPayoutArray} onClaimToggle={handleClaimToggle} />}
+      footer={
+        <ModalFooter
+          cancelText="Cancel"
+          okText="Claim"
+          handleCancel={() => setIsOpen(false)}
+          handleOk={() => claimOrWaivePayouts()}
+        />
+      }
     />
   );
 };

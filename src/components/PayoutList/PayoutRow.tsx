@@ -4,11 +4,9 @@ import { TableRow, TableCell } from "@material-ui/core";
 import { Zero } from "ethers/constants";
 import { ColonyClient } from "@colony/colony-js";
 import { ExtendedTokenLocking } from "@colony/colony-js/lib/clients/TokenLockingClient";
-import PayoutModal from "../Modals/PayoutModal";
 import { useToken, useColonyClient, useTokenLockingClient } from "../../contexts/ColonyContext";
 import { PayoutInfo } from "../../typings";
 import getReputationProof from "../../utils/colony/getReputationProof";
-import { useSafeInfo } from "../../contexts/SafeContext";
 
 const getClaimableBalance = async (
   payout: PayoutInfo,
@@ -40,28 +38,23 @@ const getTotalClaimableBalance = async (
   }, Zero);
 };
 
-const PayoutRow = ({ payouts }: { payouts: PayoutInfo[] }) => {
-  const safeInfo = useSafeInfo();
+const PayoutRow = ({ payouts, userAddress }: { payouts: PayoutInfo[]; userAddress: string }) => {
   const colonyClient = useColonyClient();
   const tokenLockingClient = useTokenLockingClient();
   const payoutToken = useToken(payouts[0].tokenAddress);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const [claimableBalance, setClaimableBalance] = useState<BigNumber>(Zero);
 
   useEffect(() => {
-    if (colonyClient && tokenLockingClient && safeInfo?.safeAddress) {
-      getTotalClaimableBalance(payouts, colonyClient, tokenLockingClient, safeInfo.safeAddress).then(
-        setClaimableBalance,
-      );
+    if (colonyClient && tokenLockingClient) {
+      getTotalClaimableBalance(payouts, colonyClient, tokenLockingClient, userAddress).then(setClaimableBalance);
     }
-  }, [colonyClient, payouts, safeInfo, tokenLockingClient]);
+  }, [colonyClient, payouts, userAddress, tokenLockingClient]);
 
   if (payouts.length === 0) return null;
   return (
     <>
-      <PayoutModal isOpen={isOpen} setIsOpen={setIsOpen} payouts={payouts} />
-      <TableRow onClick={() => setIsOpen(true)}>
+      <TableRow>
         <TableCell>{payoutToken?.symbol || payouts[0].tokenAddress}</TableCell>
         <TableCell align="right">{formatUnits(claimableBalance, payoutToken?.decimals)}</TableCell>
       </TableRow>
