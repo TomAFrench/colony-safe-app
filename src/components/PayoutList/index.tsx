@@ -29,12 +29,15 @@ const PayoutList = () => {
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const payoutList = useMemo(() => {
-    if (!safeAddress) return [];
-    return Object.entries(groupPayouts(activePayouts)).map(([tokenAddress, payouts]) => (
-      <PayoutRow key={tokenAddress} userAddress={safeAddress} payouts={payouts} />
-    ));
-  }, [activePayouts, safeAddress]);
+  const payoutList = useMemo(
+    () =>
+      safeAddress
+        ? Object.entries(groupPayouts(activePayouts)).map(([tokenAddress, payouts]) => (
+            <PayoutRow key={tokenAddress} userAddress={safeAddress} payouts={payouts} />
+          ))
+        : [],
+    [activePayouts, safeAddress],
+  );
 
   return (
     <Table>
