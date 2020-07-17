@@ -8,7 +8,7 @@ import NewPayoutRow from "./NewPayoutRow";
 import Table from "../common/StyledTable";
 
 import { useSafeInfo } from "../../contexts/SafeContext";
-import { useActivePayouts, useHasDomainPermission } from "../../contexts/ColonyContext";
+import { useClaimablePayouts, useHasDomainPermission } from "../../contexts/ColonyContext";
 import { PayoutInfo } from "../../typings";
 import PayoutModal from "../Modals/PayoutModal";
 
@@ -24,7 +24,7 @@ const groupPayouts = (payouts: PayoutInfo[]): GroupedPayouts => {
 
 const PayoutList = () => {
   const safeInfo = useSafeInfo();
-  const activePayouts = useActivePayouts();
+  const activePayouts = useClaimablePayouts(safeInfo?.safeAddress);
   const hasRootPermission = useHasDomainPermission(safeInfo?.safeAddress, 1, ColonyRole.Root);
 
   const [isOpen, setIsOpen] = useState<boolean>(false);

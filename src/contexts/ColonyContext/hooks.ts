@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 
 import { ColonyClient, ColonyRoles, ColonyRole, getMoveFundsPermissionProofs } from "@colony/colony-js";
 import { TokenInfo } from "@colony/colony-js/lib/clients/TokenClient";
-import { BigNumber, BigNumberish } from "ethers/utils";
+import { BigNumber, BigNumberish, bigNumberify } from "ethers/utils";
 import { getPermissionProofs } from "@colony/colony-js/lib/clients/Colony/extensions/commonExtensions";
 import { Zero, MaxUint256 } from "ethers/constants";
 import { ExtendedTokenLocking } from "@colony/colony-js/lib/clients/TokenLockingClient";
@@ -229,4 +229,25 @@ export const useActivePayouts = (): PayoutInfo[] => {
   }, [colonyClient]);
 
   return activePayouts;
+};
+
+export const useClaimablePayouts = (userAddress?: string): PayoutInfo[] => {
+  const colonyClient = useColonyClient();
+  const activePayouts = useActivePayouts();
+  const [userLock, setUserLock] = useState<BigNumber>(bigNumberify(0));
+
+  useEffect(() => {
+    const getLockCount = async () => {
+      if (colonyClient && userAddress) {
+        const tokenLockingClient = await colonyClient.networkClient.getTokenLockingClient();
+        const { lockCount } = await tokenLockingClient.getUserLock(await colonyClient.getToken(), userAddress);
+        return lockCount;
+      }
+      return bigNumberify(0);
+    };
+
+    getLockCount().then(setUserLock);
+  }, [colonyClient, userAddress]);
+
+  return activePayouts.filter(payout => payout.id.gte(userLock));
 };
