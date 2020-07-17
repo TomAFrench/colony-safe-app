@@ -20,7 +20,7 @@ const AddressWrapper = styled.div`
 const Address = ({ address, digits }: { address: string; digits?: number }) => {
   return (
     <AddressWrapper>
-      <Identicon seed={address} size={10} scale={3} />
+      <Identicon seed={address.toLowerCase()} size={10} scale={3} />
       <Text size="lg">{shortenAddress(address, digits)}</Text>
     </AddressWrapper>
   );
