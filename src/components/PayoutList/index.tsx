@@ -7,7 +7,7 @@ import PayoutRow from "./PayoutRow";
 import NewPayoutRow from "./NewPayoutRow";
 import Table from "../common/StyledTable";
 
-import { useSafeInfo } from "../../contexts/SafeContext";
+import { useSafeAddress } from "../../contexts/SafeContext";
 import { useClaimablePayouts, useHasDomainPermission } from "../../contexts/ColonyContext";
 import { PayoutInfo } from "../../typings";
 import PayoutModal from "../Modals/PayoutModal";
@@ -23,18 +23,18 @@ const groupPayouts = (payouts: PayoutInfo[]): GroupedPayouts => {
 };
 
 const PayoutList = () => {
-  const safeInfo = useSafeInfo();
-  const activePayouts = useClaimablePayouts(safeInfo?.safeAddress);
-  const hasRootPermission = useHasDomainPermission(safeInfo?.safeAddress, 1, ColonyRole.Root);
+  const safeAddress = useSafeAddress();
+  const activePayouts = useClaimablePayouts(safeAddress);
+  const hasRootPermission = useHasDomainPermission(safeAddress, 1, ColonyRole.Root);
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const payoutList = useMemo(() => {
-    if (!safeInfo?.safeAddress) return [];
+    if (!safeAddress) return [];
     return Object.entries(groupPayouts(activePayouts)).map(([tokenAddress, payouts]) => (
-      <PayoutRow key={tokenAddress} userAddress={safeInfo.safeAddress} payouts={payouts} />
+      <PayoutRow key={tokenAddress} userAddress={safeAddress} payouts={payouts} />
     ));
-  }, [activePayouts, safeInfo]);
+  }, [activePayouts, safeAddress]);
 
   return (
     <Table>

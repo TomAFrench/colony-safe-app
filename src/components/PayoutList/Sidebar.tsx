@@ -3,14 +3,14 @@ import { ColonyRole } from "@colony/colony-js";
 import { Text } from "@gnosis.pm/safe-react-components";
 import { BigNumber } from "ethers/utils";
 import { useHasDomainPermission, useRewardInverse } from "../../contexts/ColonyContext";
-import { useSafeInfo } from "../../contexts/SafeContext";
+import { useSafeAddress } from "../../contexts/SafeContext";
 import SetRewardsModal from "../Modals/SetRewardsModal";
 import TokenLockingModal from "../Modals/TokenLockingModal";
 
 const PayoutSidebar = () => {
-  const safeInfo = useSafeInfo();
+  const safeAddress = useSafeAddress();
   const rewardsInverse = useRewardInverse();
-  const hasRootPermission = useHasDomainPermission(safeInfo?.safeAddress, 1, ColonyRole.Root);
+  const hasRootPermission = useHasDomainPermission(safeAddress, 1, ColonyRole.Root);
 
   const rewardsPercentage = useMemo(() => new BigNumber(100).div(rewardsInverse), [rewardsInverse]);
 

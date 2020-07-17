@@ -2,7 +2,7 @@ import React, { ReactElement, useCallback, useState } from "react";
 import { GenericModal } from "@gnosis.pm/safe-react-components";
 import ModalFooter from "./ModalFooter";
 import { PayoutInfo } from "../../../typings";
-import { useAppsSdk, useSafeInfo } from "../../../contexts/SafeContext";
+import { useAppsSdk, useSafeAddress } from "../../../contexts/SafeContext";
 import { useColonyClient } from "../../../contexts/ColonyContext";
 import claimPayoutTxs from "../../../utils/transactions/rewards/claimPayout";
 import waivePayoutTxs from "../../../utils/transactions/rewards/waivePayout";
@@ -17,7 +17,7 @@ const PayoutModal = ({
   setIsOpen: Function;
   payouts: PayoutInfo[];
 }): ReactElement | null => {
-  const safeInfo = useSafeInfo();
+  const safeAddress = useSafeAddress();
   const appsSdk = useAppsSdk();
   const colonyClient = useColonyClient();
   const [claimPayoutArray, setClaimPayoutArray] = useState<boolean[]>(Array(payouts.length).fill(true));
@@ -27,17 +27,17 @@ const PayoutModal = ({
   };
 
   const claimOrWaivePayouts = useCallback(async () => {
-    if (colonyClient && safeInfo?.safeAddress) {
+    if (colonyClient && safeAddress) {
       const txs = await Promise.all(
         payouts.map((payout, index) =>
           claimPayoutArray[index]
-            ? claimPayoutTxs(colonyClient, safeInfo.safeAddress, payout)
-            : waivePayoutTxs(colonyClient, safeInfo.safeAddress, 1),
+            ? claimPayoutTxs(colonyClient, safeAddress, payout)
+            : waivePayoutTxs(colonyClient, safeAddress, 1),
         ),
       );
       appsSdk.sendTransactions(txs);
     }
-  }, [colonyClient, safeInfo, payouts, appsSdk, claimPayoutArray]);
+  }, [colonyClient, safeAddress, payouts, appsSdk, claimPayoutArray]);
 
   if (!isOpen) return null;
   return (
