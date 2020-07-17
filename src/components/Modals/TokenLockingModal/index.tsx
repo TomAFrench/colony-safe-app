@@ -4,7 +4,7 @@ import { parseUnits } from "ethers/utils";
 import { useAppsSdk } from "../../../contexts/SafeContext";
 import { useColonyClient, useNativeTokenAddress, useNativeTokenInfo } from "../../../contexts/ColonyContext";
 import depositTxs from "../../../utils/transactions/tokenLocking/deposit";
-import getActivePayouts from "../../../utils/colony/getColonyPayouts";
+import getActivePayouts from "../../../utils/colony/getActivePayouts";
 import withdrawTxs from "../../../utils/transactions/tokenLocking/withdraw";
 
 const TokenLockingModal = ({ lock, disabled }: { lock?: boolean; disabled?: boolean }) => {

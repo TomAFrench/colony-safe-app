@@ -10,7 +10,7 @@ import { Domain, PermissionProof, MoveFundsBetweenPotsProof, Token, PayoutInfo }
 import userHasDomainRole from "../../utils/colony/userHasDomainRole";
 import { useColonyContext } from "./ColonyContext";
 import getDomainTokenBalance from "../../utils/colony/getDomainTokenBalance";
-import getActivePayouts from "../../utils/colony/getColonyPayouts";
+import getActivePayouts from "../../utils/colony/getActivePayouts";
 
 export const useColonyClient = (): ColonyClient | undefined => {
   const { colonyClient } = useColonyContext();
