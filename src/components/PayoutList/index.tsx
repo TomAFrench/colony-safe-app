@@ -42,9 +42,9 @@ const PayoutList = () => {
   return (
     <Table>
       {activePayouts.length > 0 && <PayoutModal isOpen={isOpen} setIsOpen={setIsOpen} payouts={activePayouts} />}
-      <TableBody onClick={() => setIsOpen(true)}>
+      <TableBody>
         {hasRootPermission && <NewPayoutRow />}
-        {payoutList}
+        <div onClick={() => setIsOpen(true)}>{payoutList}</div>
       </TableBody>
     </Table>
   );
