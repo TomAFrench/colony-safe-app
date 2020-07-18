@@ -114,6 +114,19 @@ export const useNativeTokenInfo = () => {
   return tokenInfo;
 };
 
+export const useNativeTokenBalanceOf = (userAddress?: string) => {
+  const colonyClient = useColonyClient();
+  const [userBalance, setUserBalance] = useState<BigNumber>(bigNumberify(0));
+
+  useEffect(() => {
+    if (colonyClient && userAddress) {
+      colonyClient.tokenClient.balanceOf(userAddress).then((balance: BigNumber) => setUserBalance(balance));
+    }
+  }, [colonyClient, userAddress]);
+
+  return userBalance;
+};
+
 export const useTokens = (): Token[] => {
   const { tokens } = useColonyContext();
 

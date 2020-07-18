@@ -7,6 +7,7 @@ import {
   useNativeTokenAddress,
   useNativeTokenInfo,
   useLockedTokenBalance,
+  useNativeTokenBalanceOf,
 } from "../../../contexts/ColonyContext";
 import depositTxs from "../../../utils/transactions/tokenLocking/deposit";
 import getActivePayouts from "../../../utils/colony/getActivePayouts";
@@ -17,6 +18,7 @@ const TokenLockingModal = ({ lock, disabled }: { lock?: boolean; disabled?: bool
   const appsSdk = useAppsSdk();
   const colonyClient = useColonyClient();
   const nativeToken = useNativeTokenAddress() || "";
+  const unlockedBalance = useNativeTokenBalanceOf(safeAddress);
   const lockedBalance = useLockedTokenBalance(safeAddress);
   const { decimals } = useNativeTokenInfo() || {};
 
@@ -42,6 +44,7 @@ const TokenLockingModal = ({ lock, disabled }: { lock?: boolean; disabled?: bool
   const modalBody = (
     <>
       {`Locked Balance: ${formatUnits(lockedBalance, decimals || 0)}`}
+      {`Unlocked Balance: ${formatUnits(unlockedBalance, decimals || 0)}`}
       Amount{" "}
       <TextField
         label="Amount"

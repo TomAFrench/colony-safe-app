@@ -10,6 +10,7 @@ export {
   useLockedTokenBalance,
   useHasDomainPermission,
   useNativeTokenAddress,
+  useNativeTokenBalanceOf,
   useNativeTokenInfo,
   usePermissionProof,
   useRewardInverse,
