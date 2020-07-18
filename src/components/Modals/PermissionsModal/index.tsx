@@ -14,7 +14,7 @@ import { shortenAddress } from "../../../utils";
 import { Permission } from "./types";
 import { useColonyClient } from "../../../contexts/ColonyContext";
 import { PermissionUpdate } from "../../../typings";
-import { useSafeAddress } from "../../../contexts/SafeContext";
+import { useSafeAddress, useAppsSdk } from "../../../contexts/SafeContext";
 
 const displayPermissions = (permissions: number[]): Permission[] => [
   {
@@ -94,25 +94,46 @@ const PermissionsModal = ({
   childSkillIndex: BigNumberish;
 }) => {
   const safeAddress = useSafeAddress();
+  const appsSdk = useAppsSdk();
   const colonyClient = useColonyClient();
-  const [newPermissions, setNewPermissions] = useState(permissions);
+  const [newUserPermissions, setNewUserPermissions] = useState(permissions);
 
   const onItemToggle = (roleId: number, checked: boolean) => {
-    const copy = newPermissions.filter(role => role !== roleId);
+    const copy = newUserPermissions.filter(role => role !== roleId);
     if (checked) {
       copy.push(roleId);
     }
-    setNewPermissions(copy);
+    setNewUserPermissions(copy);
   };
 
   const updatePermissions = useCallback(() => {
-    if (colonyClient && safeAddress) {
-      const roleUpdates = getRoleUpdates(permissions, newPermissions);
-      setPermissions(colonyClient, safeAddress, roleUpdates, permissionDomainId, domainId, childSkillIndex);
-    }
-  }, [colonyClient, safeAddress, permissions, newPermissions, domainId, permissionDomainId, childSkillIndex]);
+    const setPermissions = async () => {
+      if (colonyClient && safeAddress) {
+        const roleUpdates = getRoleUpdates(permissions, newUserPermissions);
+        const txs = await setNewPermissions(
+          colonyClient,
+          safeAddress,
+          roleUpdates,
+          permissionDomainId,
+          domainId,
+          childSkillIndex,
+        );
+        appsSdk.sendTransactions(txs);
+      }
+    };
+    setPermissions();
+  }, [
+    colonyClient,
+    safeAddress,
+    permissions,
+    newUserPermissions,
+    permissionDomainId,
+    domainId,
+    childSkillIndex,
+    appsSdk,
+  ]);
 
-  const items = useMemo(() => displayPermissions(newPermissions), [newPermissions]);
+  const items = useMemo(() => displayPermissions(newUserPermissions), [newUserPermissions]);
   if (!isOpen) return null;
   return (
     <ManageListModal
