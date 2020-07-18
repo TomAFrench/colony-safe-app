@@ -26,8 +26,9 @@ const TokenRow = ({
     <>
       {typeof domain !== "undefined" && (
         <TokenModal
-          // isOpen={typeof adminPermissionProof !== "undefined" && typeof fundingPermissionProof !== "undefined" && isOpen}
-          isOpen={isOpen}
+          isOpen={
+            (typeof adminPermissionProof !== "undefined" || typeof fundingPermissionProof !== "undefined") && isOpen
+          }
           setIsOpen={setIsOpen}
           token={token}
           domain={domain}
