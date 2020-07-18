@@ -10,7 +10,6 @@ import {
   useNativeTokenBalanceOf,
 } from "../../../contexts/ColonyContext";
 import depositTxs from "../../../utils/transactions/tokenLocking/deposit";
-import getActivePayouts from "../../../utils/colony/getActivePayouts";
 import withdrawTxs from "../../../utils/transactions/tokenLocking/withdraw";
 
 const TokenLockingModal = ({ lock, disabled }: { lock?: boolean; disabled?: boolean }) => {
@@ -29,7 +28,6 @@ const TokenLockingModal = ({ lock, disabled }: { lock?: boolean; disabled?: bool
     (lockAmount: string) => {
       if (colonyClient) {
         const lockWei = parseUnits(lockAmount, decimals);
-        console.log(`${lock ? "Locking" : "Unlocking"} ${lockAmount} of token ${nativeToken} (${lockWei} wei)`);
         if (lock) {
           depositTxs(colonyClient, nativeToken, lockWei).then(txs => appsSdk.sendTransactions(txs));
         } else {
@@ -40,7 +38,6 @@ const TokenLockingModal = ({ lock, disabled }: { lock?: boolean; disabled?: bool
     [colonyClient, decimals, lock, nativeToken, appsSdk],
   );
 
-  if (colonyClient) getActivePayouts(colonyClient);
   const modalBody = (
     <>
       {`Locked Balance: ${formatUnits(lockedBalance, decimals || 0)}`}
