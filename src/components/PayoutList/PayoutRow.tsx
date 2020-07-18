@@ -38,7 +38,15 @@ const getTotalClaimableBalance = async (
   }, Zero);
 };
 
-const PayoutRow = ({ payouts, userAddress }: { payouts: PayoutInfo[]; userAddress: string }) => {
+const PayoutRow = ({
+  payouts,
+  userAddress,
+  onClick,
+}: {
+  payouts: PayoutInfo[];
+  userAddress: string;
+  onClick: () => void;
+}) => {
   const colonyClient = useColonyClient();
   const tokenLockingClient = useTokenLockingClient();
   const payoutToken = useToken(payouts[0].tokenAddress);
@@ -53,12 +61,10 @@ const PayoutRow = ({ payouts, userAddress }: { payouts: PayoutInfo[]; userAddres
 
   if (payouts.length === 0) return null;
   return (
-    <>
-      <TableRow>
-        <TableCell>{payoutToken?.symbol || payouts[0].tokenAddress}</TableCell>
-        <TableCell align="right">{formatUnits(claimableBalance, payoutToken?.decimals)}</TableCell>
-      </TableRow>
-    </>
+    <TableRow onClick={onClick}>
+      <TableCell>{payoutToken?.symbol || payouts[0].tokenAddress}</TableCell>
+      <TableCell align="right">{formatUnits(claimableBalance, payoutToken?.decimals)}</TableCell>
+    </TableRow>
   );
 };
 

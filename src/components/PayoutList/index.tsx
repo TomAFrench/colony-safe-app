@@ -33,7 +33,7 @@ const PayoutList = () => {
     () =>
       safeAddress
         ? Object.entries(groupPayouts(activePayouts)).map(([tokenAddress, payouts]) => (
-            <PayoutRow key={tokenAddress} userAddress={safeAddress} payouts={payouts} />
+            <PayoutRow key={tokenAddress} userAddress={safeAddress} payouts={payouts} onClick={() => setIsOpen(true)} />
           ))
         : [],
     [activePayouts, safeAddress],
@@ -44,7 +44,7 @@ const PayoutList = () => {
       {activePayouts.length > 0 && <PayoutModal isOpen={isOpen} setIsOpen={setIsOpen} payouts={activePayouts} />}
       <TableBody>
         {hasRootPermission && <NewPayoutRow />}
-        <div onClick={() => setIsOpen(true)}>{payoutList}</div>
+        {payoutList}
       </TableBody>
     </Table>
   );
