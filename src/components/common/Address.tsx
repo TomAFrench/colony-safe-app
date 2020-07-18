@@ -5,11 +5,9 @@ import { Text } from "@gnosis.pm/safe-react-components";
 import { shortenAddress } from "../../utils";
 
 export const Identicon = styled(Blockies)`
-  height: ${({ size }) => size}px;
-  width: ${({ size }) => size}px;
   border-radius: 50%;
-  margin-left: ${({ size }) => size / 2}px;
-  margin-right: ${({ size }) => size / 2}px;
+  margin-left: 10px;
+  margin-right: 10px;
 `;
 
 const AddressWrapper = styled.div`
