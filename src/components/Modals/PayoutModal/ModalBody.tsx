@@ -52,9 +52,9 @@ const ModalBody = ({
     <>
       <BodyHeader>
         <Text size="md">
-          Payouts must be claimed or waived in order. Please select the payouts which you would like to claim.
+          Payouts must be claimed or waived in order. Please select the payouts which you would like to claim. Any
+          unclaimed payouts will be waived and will be returned to the Colony.
         </Text>
-        <Text size="md">Any unclaimed payouts will be waived and will be returned to the Colony.</Text>
       </BodyHeader>
       {payouts.map((payout, index) => {
         const payoutToken = tokens.find(({ address }) => address === payout.tokenAddress) as Token;
