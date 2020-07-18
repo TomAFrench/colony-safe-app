@@ -2,11 +2,10 @@ import React, { ReactElement, useCallback, useMemo, useState } from "react";
 import { GenericModal, Text, ModalFooterConfirmation, Select } from "@gnosis.pm/safe-react-components";
 import { useColonyClient, useNativeTokenAddress, useTokens } from "../../../contexts/ColonyContext";
 import startPayoutRoundTxs from "../../../utils/transactions/rewards/startPayoutRound";
-import { useAppsSdk, useSafeAddress } from "../../../contexts/SafeContext";
+import { useAppsSdk } from "../../../contexts/SafeContext";
 import { Token } from "../../../typings";
 
 const StartPayoutModal = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: Function }): ReactElement | null => {
-  const safeAddress = useSafeAddress();
   const appsSdk = useAppsSdk();
   const colonyClient = useColonyClient();
   const tokens = useTokens();
@@ -36,11 +35,11 @@ const StartPayoutModal = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: F
   );
 
   const startPayout = useCallback(async () => {
-    if (colonyClient && selectedToken?.address && safeAddress) {
-      const txs = await startPayoutRoundTxs(colonyClient, selectedToken.address, safeAddress);
+    if (colonyClient && selectedToken?.address) {
+      const txs = await startPayoutRoundTxs(colonyClient, selectedToken.address);
       appsSdk.sendTransactions(txs);
     }
-  }, [colonyClient, selectedToken, safeAddress, appsSdk]);
+  }, [colonyClient, selectedToken, appsSdk]);
 
   const modalFooter = (
     <ModalFooterConfirmation

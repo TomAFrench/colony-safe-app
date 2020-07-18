@@ -1,15 +1,12 @@
 import { ColonyClient } from "@colony/colony-js";
 import { Interface } from "ethers/utils";
+import { AddressZero } from "ethers/constants";
 import { Transaction } from "../../../typings";
 import getReputationProof from "../../colony/getReputationProof";
 
-const startPayoutRoundTxs = async (
-  colonyClient: ColonyClient,
-  token: string,
-  userAddress: string,
-): Promise<Transaction[]> => {
+const startPayoutRoundTxs = async (colonyClient: ColonyClient, token: string): Promise<Transaction[]> => {
   const colonyInterface: Interface = colonyClient.interface;
-  const { key, value, branchMask, siblings } = await getReputationProof(colonyClient, userAddress);
+  const { key, value, branchMask, siblings } = await getReputationProof(colonyClient, AddressZero);
   const txs: Transaction[] = [];
 
   txs.push({
