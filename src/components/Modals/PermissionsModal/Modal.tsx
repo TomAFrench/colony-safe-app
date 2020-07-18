@@ -1,7 +1,7 @@
 import React, { ChangeEvent } from "react";
 import styled from "styled-components";
 
-import { Checkbox, GenericModal, Text, ModalFooterConfirmation } from "@gnosis.pm/safe-react-components";
+import { Checkbox, GenericModal, Text, ModalFooterConfirmation, TextField } from "@gnosis.pm/safe-react-components";
 import { ColonyRole } from "@colony/colony-js";
 import { Permission } from "./types";
 
@@ -53,6 +53,8 @@ type Props = {
   onPermissionToggle: (itemId: ColonyRole, checked: boolean) => any;
   onClose: () => any;
   newAccount?: boolean;
+  userAddress?: string;
+  handleChangeAddress: (_event: any) => void;
 };
 
 const PermissionsToggleList = ({
@@ -103,6 +105,8 @@ const ManageList = ({
   defaultIconUrl,
   isSubmitFormDisabled = false,
   newAccount,
+  userAddress,
+  handleChangeAddress,
   onSubmitForm,
   onPermissionToggle,
   onClose,
@@ -111,7 +115,13 @@ const ManageList = ({
     <>
       {newAccount && (
         <BodyHeader>
-          <Text size="md"> Adding New Account</Text>
+          <Text size="md"> New User: </Text>
+          <TextField
+            style={{ width: "250px" }}
+            label="Address"
+            value={userAddress || ""}
+            onChange={handleChangeAddress}
+          />
         </BodyHeader>
       )}
       <div>

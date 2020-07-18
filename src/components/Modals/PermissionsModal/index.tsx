@@ -147,6 +147,8 @@ const PermissionsModal = ({
       onClose={() => setIsOpen(false)}
       onPermissionToggle={onItemToggle}
       newAccount={!address}
+      userAddress={userAddress}
+      handleChangeAddress={(event: any) => setUserAddress(event.target.value)}
     />
   );
 };
