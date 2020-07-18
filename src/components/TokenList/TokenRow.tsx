@@ -36,7 +36,11 @@ const TokenRow = ({
           fundingPermissionProof={fundingPermissionProof}
         />
       )}
-      <TableRow onClick={() => setIsOpen(true)}>
+      <TableRow
+        onClick={() => {
+          if (typeof domain !== "undefined") setIsOpen(true);
+        }}
+      >
         <TableCell>{token.symbol}</TableCell>
         <TableCell align="right">{formatUnits(balance, token.decimals)}</TableCell>
       </TableRow>
