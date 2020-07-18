@@ -51,7 +51,7 @@ const setPermissionTx = (
   };
 };
 
-const SetPermissions = (
+const setNewPermissions = (
   colonyClient: ColonyClient,
   user: string,
   roleUpdates: PermissionUpdate[],
@@ -72,4 +72,4 @@ const SetPermissions = (
   return txs;
 };
 
-export default SetPermissions;
+export default setNewPermissions;

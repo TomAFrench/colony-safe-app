@@ -9,7 +9,7 @@ import RecoveryIcon from "../../../assets/permissions/recovery.svg";
 import RootIcon from "../../../assets/permissions/root.svg";
 
 import ManageListModal from "./Modal";
-import setPermissions from "../../../utils/transactions/permissions/setPermissions";
+import setNewPermissions from "../../../utils/transactions/permissions/setNewPermissions";
 import { shortenAddress } from "../../../utils";
 import { Permission } from "./types";
 import { useColonyClient } from "../../../contexts/ColonyContext";
