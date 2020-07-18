@@ -46,7 +46,10 @@ const StartPayoutModal = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: F
     <ModalFooterConfirmation
       okText="Start Payout"
       handleCancel={() => setIsOpen(false)}
-      handleOk={() => startPayout()}
+      handleOk={() => {
+        startPayout();
+        setIsOpen(false);
+      }}
     />
   );
 

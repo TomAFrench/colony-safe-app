@@ -56,7 +56,10 @@ const TokenLockingModal = ({ lock, disabled }: { lock?: boolean; disabled?: bool
       okText={lock ? "Lock" : "Unlock"}
       // okDisabled={false}
       handleCancel={() => setIsOpen(false)}
-      handleOk={() => tokenAction(amount)}
+      handleOk={() => {
+        tokenAction(amount);
+        setIsOpen(false);
+      }}
     />
   );
   return (

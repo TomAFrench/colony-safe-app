@@ -158,7 +158,14 @@ const TokenModal = ({
       okText="Save"
       // okDisabled={false}
       handleCancel={() => setIsOpen(false)}
-      handleOk={() => (currentTab ? sendTokens() : moveTokensToPot())}
+      handleOk={async () => {
+        if (currentTab === 1) {
+          sendTokens();
+        } else {
+          await moveTokensToPot();
+        }
+        setIsOpen(false);
+      }}
     />
   );
 

@@ -43,7 +43,10 @@ const SetRewardsModal = ({ disabled }: { disabled?: boolean }) => {
       okText="Save"
       // okDisabled={false}
       handleCancel={() => setIsOpen(false)}
-      handleOk={() => setRewardsInverse(rewardsPercentage)}
+      handleOk={() => {
+        setRewardsInverse(rewardsPercentage);
+        setIsOpen(false);
+      }}
     />
   );
   return (

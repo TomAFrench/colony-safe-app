@@ -33,10 +33,7 @@ const TokenModalBody = ({
           label: domain.domainId.toNumber() === 1 ? `Root Domain` : `Domain ${index}`,
         }))}
         activeItemId={targetDomain.domainId.toString()}
-        onItemClick={id => {
-          console.log(id);
-          handleChangeDomain(parseInt(id, 10));
-        }}
+        onItemClick={id => handleChangeDomain(parseInt(id, 10))}
       />
       <Text size="lg">{`${token.symbol} Amount:`}</Text>
       <TextField style={{ width: "250px" }} label="Amount" value={amount} onChange={handleChangeAmount} />

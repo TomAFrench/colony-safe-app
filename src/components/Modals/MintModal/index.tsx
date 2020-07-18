@@ -54,6 +54,7 @@ const MintModal = ({ isOpen, setIsOpen }: { isOpen: boolean; setIsOpen: Function
       handleOk={() => {
         console.log(`Minting ${amount} tokens`);
         mintTokens(parseUnits(amount, nativeTokenInfo?.decimals));
+        setIsOpen(false);
       }}
     />
   );

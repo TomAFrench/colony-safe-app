@@ -50,7 +50,10 @@ const PayoutModal = ({
           cancelText="Cancel"
           okText="Claim"
           handleCancel={() => setIsOpen(false)}
-          handleOk={() => claimOrWaivePayouts()}
+          handleOk={async () => {
+            await claimOrWaivePayouts();
+            setIsOpen(false);
+          }}
         />
       }
     />

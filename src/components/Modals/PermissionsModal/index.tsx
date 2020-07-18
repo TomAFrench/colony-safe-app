@@ -140,7 +140,10 @@ const PermissionsModal = ({
       title={address ? shortenAddress(address) : "New Account"}
       defaultIconUrl=""
       permissionsList={items}
-      onSubmitForm={() => updatePermissions()}
+      onSubmitForm={() => {
+        updatePermissions();
+        setIsOpen(false);
+      }}
       onClose={() => setIsOpen(false)}
       onPermissionToggle={onItemToggle}
       newAccount={!address}
