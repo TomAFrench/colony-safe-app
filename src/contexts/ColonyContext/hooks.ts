@@ -251,3 +251,23 @@ export const useClaimablePayouts = (userAddress?: string): PayoutInfo[] => {
 
   return activePayouts.filter(payout => payout.id.gte(userLock));
 };
+
+export const useLockedTokenBalance = (userAddress?: string): BigNumber => {
+  const tokenLockingClient = useTokenLockingClient();
+  const nativeTokenAddress = useNativeTokenAddress();
+  const [userLockedBalance, setUserLockedBalance] = useState<BigNumber>(bigNumberify(0));
+
+  useEffect(() => {
+    const getLockedBalance = async () => {
+      if (tokenLockingClient && nativeTokenAddress && userAddress) {
+        const { balance } = await tokenLockingClient.getUserLock(nativeTokenAddress, userAddress);
+        return balance;
+      }
+      return bigNumberify(0);
+    };
+
+    getLockedBalance().then(setUserLockedBalance);
+  }, [tokenLockingClient, nativeTokenAddress, userAddress]);
+
+  return userLockedBalance;
+};

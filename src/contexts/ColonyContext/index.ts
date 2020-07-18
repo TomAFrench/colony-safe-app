@@ -7,6 +7,7 @@ export {
   useColonyDomain,
   useColonyRoles,
   useDomainTokenBalance,
+  useLockedTokenBalance,
   useHasDomainPermission,
   useNativeTokenAddress,
   useNativeTokenInfo,

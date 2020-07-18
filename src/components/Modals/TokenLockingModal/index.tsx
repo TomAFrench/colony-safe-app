@@ -1,16 +1,23 @@
 import React, { useState, ChangeEvent, useCallback } from "react";
 import { Button, GenericModal, TextField, ModalFooterConfirmation } from "@gnosis.pm/safe-react-components";
-import { parseUnits } from "ethers/utils";
-import { useAppsSdk } from "../../../contexts/SafeContext";
-import { useColonyClient, useNativeTokenAddress, useNativeTokenInfo } from "../../../contexts/ColonyContext";
+import { parseUnits, formatUnits } from "ethers/utils";
+import { useAppsSdk, useSafeAddress } from "../../../contexts/SafeContext";
+import {
+  useColonyClient,
+  useNativeTokenAddress,
+  useNativeTokenInfo,
+  useLockedTokenBalance,
+} from "../../../contexts/ColonyContext";
 import depositTxs from "../../../utils/transactions/tokenLocking/deposit";
 import getActivePayouts from "../../../utils/colony/getActivePayouts";
 import withdrawTxs from "../../../utils/transactions/tokenLocking/withdraw";
 
 const TokenLockingModal = ({ lock, disabled }: { lock?: boolean; disabled?: boolean }) => {
+  const safeAddress = useSafeAddress();
   const appsSdk = useAppsSdk();
   const colonyClient = useColonyClient();
   const nativeToken = useNativeTokenAddress() || "";
+  const lockedBalance = useLockedTokenBalance(safeAddress);
   const { decimals } = useNativeTokenInfo() || {};
 
   const [isOpen, setIsOpen] = useState(false);
@@ -34,6 +41,7 @@ const TokenLockingModal = ({ lock, disabled }: { lock?: boolean; disabled?: bool
   if (colonyClient) getActivePayouts(colonyClient);
   const modalBody = (
     <>
+      {`Locked Balance: ${formatUnits(lockedBalance, decimals || 0)}`}
       Amount{" "}
       <TextField
         label="Amount"
