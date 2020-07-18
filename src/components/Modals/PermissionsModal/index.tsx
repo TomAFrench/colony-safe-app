@@ -10,11 +10,11 @@ import RootIcon from "../../../assets/permissions/root.svg";
 
 import ManageListModal from "./Modal";
 import setNewPermissions from "../../../utils/transactions/permissions/setNewPermissions";
-import { shortenAddress } from "../../../utils";
+import { shortenAddress, isAddress } from "../../../utils";
 import { Permission } from "./types";
 import { useColonyClient } from "../../../contexts/ColonyContext";
 import { PermissionUpdate } from "../../../typings";
-import { useSafeAddress, useAppsSdk } from "../../../contexts/SafeContext";
+import { useAppsSdk } from "../../../contexts/SafeContext";
 
 const displayPermissions = (permissions: number[]): Permission[] => [
   {
@@ -93,9 +93,9 @@ const PermissionsModal = ({
   permissionDomainId: BigNumberish;
   childSkillIndex: BigNumberish;
 }) => {
-  const safeAddress = useSafeAddress();
   const appsSdk = useAppsSdk();
   const colonyClient = useColonyClient();
+  const [userAddress, setUserAddress] = useState<string | undefined>(address);
   const [newUserPermissions, setNewUserPermissions] = useState(permissions);
 
   const onItemToggle = (roleId: number, checked: boolean) => {
@@ -108,11 +108,11 @@ const PermissionsModal = ({
 
   const updatePermissions = useCallback(() => {
     const setPermissions = async () => {
-      if (colonyClient && safeAddress) {
+      if (colonyClient && isAddress(userAddress)) {
         const roleUpdates = getRoleUpdates(permissions, newUserPermissions);
         const txs = await setNewPermissions(
           colonyClient,
-          safeAddress,
+          userAddress as string,
           roleUpdates,
           permissionDomainId,
           domainId,
@@ -124,9 +124,9 @@ const PermissionsModal = ({
     setPermissions();
   }, [
     colonyClient,
-    safeAddress,
     permissions,
     newUserPermissions,
+    userAddress,
     permissionDomainId,
     domainId,
     childSkillIndex,
