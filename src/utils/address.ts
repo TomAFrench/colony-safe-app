@@ -1,8 +1,8 @@
 import { getAddress } from "ethers/utils";
 
-function isAddress(address: string) {
+export function isAddress(address?: string) {
   try {
-    getAddress(address);
+    getAddress(address || "");
   } catch (e) {
     return false;
   }
