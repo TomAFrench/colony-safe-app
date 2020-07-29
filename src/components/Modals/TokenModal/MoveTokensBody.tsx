@@ -1,6 +1,13 @@
 import React, { ReactElement } from "react";
 import { Text, TextField, Select } from "@gnosis.pm/safe-react-components";
+import { BigNumber } from "ethers/utils";
 import { Token, PermissionProof, Domain } from "../../../typings";
+
+const domainName = (domainId: BigNumber) => {
+  if (domainId.toNumber() === 0) return "Rewards Pot";
+  if (domainId.toNumber() === 1) return "Root Domain";
+  return `Domain ${domainId.sub(1)}`;
+};
 
 const TokenModalBody = ({
   token,
@@ -30,7 +37,7 @@ const TokenModalBody = ({
       <Select
         items={domains.map((domain, index) => ({
           id: domain.domainId.toString(),
-          label: domain.domainId.toNumber() === 1 ? `Root Domain` : `Domain ${index}`,
+          label: domainName(domain.domainId),
         }))}
         activeItemId={targetDomain.domainId.toString()}
         onItemClick={id => handleChangeDomain(parseInt(id, 10))}

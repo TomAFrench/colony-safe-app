@@ -66,6 +66,19 @@ export const useColonyDomains = (): Domain[] => {
   return colonyDomains;
 };
 
+export const useColonyExtendedDomains = (): Domain[] => {
+  const { colonyDomains } = useColonyContext();
+  const rewardsDomain = {
+    skillId: bigNumberify(0),
+    fundingPotId: bigNumberify(0),
+    domainId: bigNumberify(0),
+    0: bigNumberify(0),
+    1: bigNumberify(0),
+    2: bigNumberify(0),
+  };
+  return [rewardsDomain, ...colonyDomains];
+};
+
 export const useColonyDomain = (domainId: number) => {
   const domains = useColonyDomains();
 

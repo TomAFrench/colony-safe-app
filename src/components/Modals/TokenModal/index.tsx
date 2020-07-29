@@ -6,7 +6,7 @@ import { parseUnits } from "ethers/utils";
 import { Token, PermissionProof, Domain } from "../../../typings";
 import SendTokensBody from "./SendTokensBody";
 import MoveTokensBody from "./MoveTokensBody";
-import { useColonyClient, usePermissionProof, useColonyDomains } from "../../../contexts/ColonyContext";
+import { useColonyClient, usePermissionProof, useColonyExtendedDomains } from "../../../contexts/ColonyContext";
 import { useSafeAddress, useAppsSdk } from "../../../contexts/SafeContext";
 import moveTokenTxs from "../../../utils/transactions/moveTokens";
 import makePaymentTxs from "../../../utils/transactions/makePayment";
@@ -40,7 +40,7 @@ const TokenModal = ({
   const safeAddress = useSafeAddress();
   const appSdk = useAppsSdk();
   const client = useColonyClient();
-  const domains = useColonyDomains();
+  const domains = useColonyExtendedDomains();
   const paymentClientProof = usePermissionProof(
     domain.domainId,
     ColonyRole.Funding,

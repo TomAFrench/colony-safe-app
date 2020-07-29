@@ -5,6 +5,7 @@ export {
   useColonyClient,
   useColonyDomains,
   useColonyDomain,
+  useColonyExtendedDomains,
   useColonyRoles,
   useDomainTokenBalance,
   useLockedTokenBalance,
